@@ -58,3 +58,6 @@ class HighLowGame:
 
     def is_finished(self):
         return self.round > 3 or self.chips <= 0
+
+    def is_round_finished(self):
+        return self.outcome is not None
