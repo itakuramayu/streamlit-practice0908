@@ -16,7 +16,7 @@ game = st.session_state.game
 # --- 終了チェック ---
 if game.is_finished():
     st.subheader("🎮 ゲーム終了")
-    st.write(f"最終チップ: {game.chips}")
+    st.write(f"💰 最終チップ: **{game.chips}**")
     df = pd.DataFrame(game.history)
     st.table(df)
 
@@ -25,33 +25,33 @@ if game.is_finished():
         st.rerun()
     st.stop()
 
-# --- 状態表示 ---
-st.write(f"💰 現在のチップ: {game.chips}")
-st.write(f"🔢 ラウンド: {game.round}/3")
+# --- 勝負前 UI ---
+if not game.is_round_finished():
+    st.write(f"💰 現在のチップ: {game.chips}")
+    st.write(f"🔢 ラウンド: {game.round}/3")
 
-# --- ベット額入力 ---
-bet = st.number_input(
-    "ベット額を入力してください",
-    min_value=1,
-    max_value=game.chips,
-    value=game.bet,
-    step=1
-)
+    bet = st.number_input(
+        "ベット額を入力してください",
+        min_value=1,
+        max_value=game.chips,
+        value=game.bet,
+        step=1
+    )
 
-# --- ベースカード表示 ---
-base_card = game.draw_base_card()
-st.write(f"🃏 ベースカード: {base_card}")
+    base_card = game.draw_base_card()
+    st.write(f"🃏 ベースカード: {base_card}")
 
-# --- 選択肢 ---
-choice = st.radio("選択してください", ["High", "Draw", "Low"])
+    choice = st.radio("選択してください", ["High", "Draw", "Low"])
 
-# --- 勝負ボタン ---
-if st.button("🔥 勝負！") and game.outcome is None:
-    outcome, result_card = game.play_round(choice, bet)
+    if st.button("🔥 勝負！"):
+        game.play_round(choice, bet)
+        st.rerun()
 
-# --- 結果表示 ---
-if game.outcome is not None:
+# --- 勝負後 UI ---
+else:
     st.write(f"結果カード: {game.result_card}")
+
+    bet = game.history[-1]["bet"]
     if game.outcome == "win":
         st.success(f"🎉 勝ち！ +{bet}チップ")
     elif game.outcome == "draw":
