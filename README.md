@@ -3,3 +3,4 @@
 以下のコマンドでアプリを起動できます。
 ```bash
  streamlit run cards_games_app.py
+このアプリはカードゲームを遊ぶためのものです。
