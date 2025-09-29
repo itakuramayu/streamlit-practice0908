@@ -3,12 +3,12 @@
 ## 起動方法
 以下のコマンドでアプリを起動できます。
 ```bash
- streamlit run cards_games_app.py
+ streamlit run high_and_low_view.py
  ```
 このアプリは**カードゲーム**を遊ぶためのものです。
 
 
-[website](https://itakuramayu-streamlit-practice0908-cards-games-app-make--io6zmm.streamlit.app/High_and_Low)
+[website](https://itakuramayu-streamlit-practice09-viewshigh-and-low-view-vwy7d5.streamlit.app/)
 
 ## インストール
 ````bash
