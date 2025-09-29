@@ -1,0 +1,12 @@
+site_name: Card Game App
+site_url: https://itakuramayu.github.io/streamlit-practice0908/
+theme:
+  name: material
+nav:
+  - Home: index.md
+  - home2: about.md
+  - home3 : how_to_use/highandlow.md
+repo_url: https://github.com/itakuramayu/streamlit-practice0908
+extra:
+  version:
+    provider: mike
