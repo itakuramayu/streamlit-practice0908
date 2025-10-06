@@ -1,5 +1,70 @@
 import streamlit as st
 import pandas as pd
+import streamlit.components.v1 as components
+
+def crying_animation():
+    components.html(
+        """
+        <div id="emoji-container"></div>
+        <style>
+        .emoji {
+            position: fixed;
+            top: -2em;
+            font-size: 2em;
+            animation: fall linear;
+        }
+        @keyframes fall {
+            to {
+                transform: translateY(110vh);
+            }
+        }
+        </style>
+        <script>
+        const container = document.getElementById("emoji-container");
+        for (let i = 0; i < 30; i++) {
+            const emoji = document.createElement("div");
+            emoji.textContent = "😭";
+            emoji.classList.add("emoji");
+            emoji.style.left = Math.random() * 100 + "vw";
+            emoji.style.animationDuration = (2 + Math.random() * 3) + "s";
+            container.appendChild(emoji);
+        }
+        </script>
+        """,
+        height=100,
+    )
+
+def clapping_animation():
+    components.html(
+        """
+        <div id="emoji-container"></div>
+        <style>
+        .emoji {
+            position: fixed;
+            top: -2em;
+            font-size: 2em;
+            animation: fall linear;
+        }
+        @keyframes fall {
+            to {
+                transform: translateY(110vh);
+            }
+        }
+        </style>
+        <script>
+        const container = document.getElementById("emoji-container");
+        for (let i = 0; i < 30; i++) {
+            const emoji = document.createElement("div");
+            emoji.textContent = "✨";
+            emoji.classList.add("emoji");
+            emoji.style.left = Math.random() * 100 + "vw";
+            emoji.style.animationDuration = (2 + Math.random() * 3) + "s";
+            container.appendChild(emoji);
+        }
+        </script>
+        """,
+        height=100,
+    )
 
 def run_ui(game_class):
     st.title("♦ High and Low Game ♠")
@@ -18,9 +83,10 @@ def run_ui(game_class):
         # 勝敗判定
         if game.chips > 100:
             st.success("🏆 あなたの勝ちです！ 🎉")
+            clapping_animation()
         else:
             st.error("😢 あなたの負けです…")
-
+            crying_animation()
         # 履歴表示
         df = pd.DataFrame(game.history)
         st.table(df)
