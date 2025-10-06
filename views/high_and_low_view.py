@@ -1,67 +1,73 @@
 import streamlit as st
 import pandas as pd
-import os
-import sys
-sys.path.append(os.getcwd())
-from model.high_and_low import HighLowGame
 
-st.title("♦ High and Low Game ♠")
+def run_ui(game_class):
+    st.title("♦ High and Low Game ♠")
 
-# --- 初期化 ---
-if "game" not in st.session_state:
-    st.session_state.game = HighLowGame()
+    # --- 初期化 ---
+    if "game" not in st.session_state:
+        st.session_state.game = game_class()
 
-game = st.session_state.game
+    game = st.session_state.game
 
-# --- 終了チェック ---
-if game.is_finished():
-    st.subheader("🎮 ゲーム終了")
-    st.write(f"💰 最終チップ: **{game.chips}**")
-    df = pd.DataFrame(game.history)
-    st.table(df)
+    # --- 終了チェック ---
+    if game.is_finished():
+        st.subheader("🎮 ゲーム終了")
+        st.write(f"💰 最終チップ: **{game.chips}**")
 
-    if st.button("🔄 もう一回！"):
-        st.session_state.game = HighLowGame()
-        st.rerun()
-    st.stop()
+        # 勝敗判定
+        if game.chips > 100:
+            st.success("🏆 あなたの勝ちです！ 🎉")
+        else:
+            st.error("😢 あなたの負けです…")
 
-# --- 勝負前 UI ---
-if not game.is_round_finished():
-    st.write(f"💰 現在のチップ: {game.chips}")
-    st.write(f"🔢 ラウンド: {game.round}/3")
+        # 履歴表示
+        df = pd.DataFrame(game.history)
+        st.table(df)
 
-    bet = st.number_input(
-        "ベット額を入力してください",
-        min_value=1,
-        max_value=game.chips,
-        value=game.bet,
-        step=1
-    )
+        if st.button("🔄 もう一回！"):
+            st.session_state.game = game_class()
+            st.rerun()
+        st.stop()
 
-    base_card = game.draw_base_card()
-    st.write(f"🃏 ベースカード: {base_card}")
 
-    choice = st.radio("選択してください", ["High", "Draw", "Low"])
+    # --- 勝負前 UI ---
+    if not game.is_round_finished():
+        st.write(f"💰 現在のチップ: {game.chips}")
+        st.write(f"🔢 ラウンド: {game.round}/3")
 
-    if st.button("🔥 勝負！"):
-        game.play_round(choice, bet)
-        st.rerun()
+        bet = st.number_input(
+            "ベット額を入力してください",
+            min_value=1,
+            max_value=game.chips,
+            value=game.bet,
+            step=1
+        )
 
-# --- 勝負後 UI ---
-else:
-    st.write(f"結果カード: {game.result_card}")
+        base_card = game.draw_base_card()
+        st.write(f"🃏 ベースカード: {base_card}")
 
-    bet = game.history[-1]["bet"]
-    if game.outcome == "win":
-        st.success(f"🎉 勝ち！ +{bet}チップ")
-    elif game.outcome == "draw":
-        st.info("🤝 引き分け（チップ変動なし）")
+        choice = st.radio("選択してください", ["High", "Draw", "Low"])
+
+        if st.button("🔥 勝負！"):
+            game.play_round(choice, bet)
+            st.rerun()
+
+    # --- 勝負後 UI ---
     else:
-        st.error(f"💀 負け！ -{bet}チップ")
+        st.write(f"結果カード: {game.result_card}")
 
-    st.write(f"💰 現在のチップ: {game.chips}")
+        bet = game.history[-1]["bet"]
+        if game.outcome == "win":
+            st.success(f"🎉 勝ち！ +{bet}チップ")
+        elif game.outcome == "draw":
+            st.info("🤝 引き分け（チップ変動なし）")
+        else:
+            st.error(f"💀 負け！ -{bet}チップ")
 
-    next_label = "結果発表へ" if game.round == 3 else "➡ 次のラウンドへ"
-    if st.button(next_label):
-        game.next_round(bet)
-        st.rerun()
+        st.write(f"💰 現在のチップ: {game.chips}")
+
+        next_label = "結果発表へ" if game.round == 3 else "➡ 次のラウンドへ"
+        if st.button(next_label):
+            game.next_round(bet)
+            st.rerun()
