@@ -14,6 +14,14 @@ def run_ui(game_class):
     if game.is_finished():
         st.subheader("🎮 ゲーム終了")
         st.write(f"💰 最終チップ: **{game.chips}**")
+
+        # 勝敗判定
+        if game.chips > 100:
+            st.success("🏆 あなたの勝ちです！ 🎉")
+        else:
+            st.error("😢 あなたの負けです…")
+
+        # 履歴表示
         df = pd.DataFrame(game.history)
         st.table(df)
 
@@ -21,6 +29,7 @@ def run_ui(game_class):
             st.session_state.game = game_class()
             st.rerun()
         st.stop()
+
 
     # --- 勝負前 UI ---
     if not game.is_round_finished():
